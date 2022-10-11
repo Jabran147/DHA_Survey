@@ -29,20 +29,21 @@ class _RecordTilesState extends State<RecordTiles> {
         leading: CircleAvatar(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.file(
-              File(widget.mtRecord.imageBefore1.toString()),
+            child: Image.memory(
+              base64Decode(widget.mtRecord.imageBefore1.toString()),
               fit: BoxFit.cover,
               width: 40,
             ),
           ),
         ),
         title: Text(
-          '${widget.mtRecord.remarks} ${widget.mtRecord.lat} ${widget.mtRecord.long}',
+          '${widget.mtRecord.remarks}',
           style: const TextStyle(
               color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          widget.mtRecord.createdAt.toString(),
+          '${widget.mtRecord.createdAt}',
+          // widget.mtRecord.createdAt.toString(),
           style: const TextStyle(color: Colors.white),
         ),
         trailing: ElevatedButton(

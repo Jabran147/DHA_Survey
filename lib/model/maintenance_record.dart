@@ -19,16 +19,18 @@ class MaintenanceRecord extends HiveObject {
   @HiveField(6)
   String? createdAt;
   @HiveField(7)
-  String? imageBefore1;
+  String? completedAt;
   @HiveField(8)
-  String? imageBefore2;
+  String? imageBefore1;
   @HiveField(9)
-  String? imageAfter1;
+  String? imageBefore2;
   @HiveField(10)
-  String? imageAfter2;
+  String? imageAfter1;
   @HiveField(11)
-  String? lat;
+  String? imageAfter2;
   @HiveField(12)
+  String? lat;
+  @HiveField(13)
   String? long;
 
   MaintenanceRecord(
@@ -39,6 +41,7 @@ class MaintenanceRecord extends HiveObject {
       this.status = '0',
       this.remarks,
       this.createdAt,
+      this.completedAt,
       this.imageBefore1,
       this.imageBefore2,
       this.imageAfter1,

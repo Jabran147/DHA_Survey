@@ -1,3 +1,4 @@
+import 'package:dha_cleaning_app/utils/shared_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,8 +10,14 @@ import './screens/homepage.dart';
 import './model/maintenance_record.dart';
 import './model/user_record.dart';
 
+Widget _defaultHome = const SplashScreen();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  bool result = await SharedService.isLoggedIn();
+  if (result) {
+    _defaultHome = const SplashScreen();
+  }
   Directory directory = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(directory.path);
   Hive.registerAdapter<MaintenanceRecord>(MaintenanceRecordAdapter());
@@ -43,24 +50,13 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         fontFamily: 'SF-Pro',
       ),
-      home: const SplashScreen(),
-      // home: FutureBuilder(
-      //   future: Hive.openBox('maintenanceRecord'),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.done) {
-      //       if (snapshot.hasError) {
-      //         return Text(snapshot.error.toString());
-      //       } else {
-      //         return const SplashScreen();
-      //       }
-      //     } else {
-      //       return const Scaffold();
-      //     }
-      //   },
-      // ),
+      // home: const SplashScreen(),
       routes: {
-        HomePage.namedRoute: (context) => HomePage(),
-        LoginScreen.namedRoute: (context) => LoginScreen(),
+        '/': (context) => _defaultHome,
+        '/home': (context) => HomePage(),
+        '/login': (context) => LoginScreen(),
+        // HomePage.namedRoute: (context) => HomePage(),
+        // LoginScreen.namedRoute: (context) => LoginScreen(),
       },
       // @override
       // void dispose() {

@@ -24,17 +24,20 @@ class MaintenanceRecordAdapter extends TypeAdapter<MaintenanceRecord> {
       status: fields[4] as String,
       remarks: fields[5] as String?,
       createdAt: fields[6] as String?,
-      imageBefore1: fields[7] as String?,
-      imageBefore2: fields[8] as String?,
-      imageAfter1: fields[9] as String?,
-      imageAfter2: fields[10] as String?,
+      completedAt: fields[7] as String?,
+      imageBefore1: fields[8] as String?,
+      imageBefore2: fields[9] as String?,
+      imageAfter1: fields[10] as String?,
+      imageAfter2: fields[11] as String?,
+      lat: fields[12] as String?,
+      long: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, MaintenanceRecord obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.phase)
       ..writeByte(1)
@@ -50,13 +53,19 @@ class MaintenanceRecordAdapter extends TypeAdapter<MaintenanceRecord> {
       ..writeByte(6)
       ..write(obj.createdAt)
       ..writeByte(7)
-      ..write(obj.imageBefore1)
+      ..write(obj.completedAt)
       ..writeByte(8)
-      ..write(obj.imageBefore2)
+      ..write(obj.imageBefore1)
       ..writeByte(9)
-      ..write(obj.imageAfter1)
+      ..write(obj.imageBefore2)
       ..writeByte(10)
-      ..write(obj.imageAfter2);
+      ..write(obj.imageAfter1)
+      ..writeByte(11)
+      ..write(obj.imageAfter2)
+      ..writeByte(12)
+      ..write(obj.lat)
+      ..writeByte(13)
+      ..write(obj.long);
   }
 
   @override

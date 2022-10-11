@@ -1,6 +1,9 @@
+import 'package:dha_cleaning_app/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
 import './login.dart';
+import '../widgets/demo_phase.dart';
+import '../screens/login.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -17,7 +20,7 @@ class SplashScreen extends StatelessWidget {
       logoWidth: 80,
       loadingText: const Text('Powered By PITB'),
       navigator: LoginScreen(),
-      durationInSeconds: 3,
+      durationInSeconds: 2,
     );
   }
 }
