@@ -1,6 +1,6 @@
 class ApiConstants {
   static String appName = "DHA Maintenance";
-  static String baseUrl = "10.0.2.2:4000";
+  static String baseUrl = "http://10.0.2.2:4000";
   static String phaseEndpoint = '/phase';
   static String sectorEndpoint = '/sector';
   static String categoryEndpoint = '/category';

@@ -7,15 +7,37 @@ import 'package:http/http.dart' as http;
 import '../model/sector_model.dart';
 import '../utils/api_constants.dart';
 import '../model/phase_model.dart';
+import '../model/clients_record.dart';
 
 class ApiService {
   static var client = http.Client();
   Future<List<PhaseRecord>?> getPhases() async {
+    var loginDetails = await SharedService.loginDetails();
+
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'x-access-token': loginDetails!.token
+    };
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.phaseEndpoint);
-      var respone = await http.get(url);
-      if (respone.statusCode == 200) {
-        List<PhaseRecord> model = phaseRecordFromJson(respone.body);
+      var response = await client.get(url, headers: requestHeaders);
+      // var respone = await http.get(url);
+      if (response.statusCode == 200) {
+        List<PhaseRecord> model = phaseRecordFromJson(response.body.toString());
+        return model;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  Future<List<Welcome>?> getClients() async {
+    try {
+      var url = Uri.parse('https://jsonplaceholder.typicode.com/users');
+      var response = await client.get(url);
+      if (response.statusCode == 200) {
+        List<Welcome> model = welcomeFromJson(response.body.toString());
         return model;
       }
     } catch (e) {
@@ -25,11 +47,18 @@ class ApiService {
   }
 
   Future<List<SectorRecord>?> getSectors() async {
+    var loginDetails = await SharedService.loginDetails();
+
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'x-access-token': loginDetails!.token
+    };
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.sectorEndpoint);
-      var respone = await http.get(url);
+      var respone = await http.get(url, headers: requestHeaders);
       if (respone.statusCode == 200) {
-        List<SectorRecord> model = sectorRecordFromJson(respone.body);
+        List<SectorRecord> model =
+            sectorRecordFromJson(respone.body.toString());
         return model;
       }
     } catch (e) {
@@ -42,7 +71,8 @@ class ApiService {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
-    var url = Uri.http(ApiConstants.baseUrl, ApiConstants.loginEndpoint);
+
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.loginEndpoint);
     var response = await client.post(url,
         headers: requestHeaders, body: jsonEncode(model.toJson()));
     if (response.statusCode == 200) {
@@ -62,7 +92,7 @@ class ApiService {
       'Authorization': 'Basic ${loginDetails!.token}'
     };
 
-    var url = Uri.http(ApiConstants.baseUrl, ApiConstants.userEndpoint);
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.userEndpoint);
 
     var response = await client.get(
       url,

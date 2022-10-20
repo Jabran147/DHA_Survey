@@ -36,18 +36,21 @@ class Doc {
     this.id,
     this.sectorName,
     this.phaseId,
+    this.phase,
     this.createdAt,
   });
 
   String? id;
   String? sectorName;
   PhaseId? phaseId;
+  List<Phase>? phase;
   String? createdAt;
 
   factory Doc.fromJson(Map<String, dynamic> json) => Doc(
         id: json["_id"],
         sectorName: json["sectorName"],
         phaseId: phaseIdValues.map[json["phaseID"]],
+        phase: List<Phase>.from(json["phase"].map((x) => Phase.fromJson(x))),
         createdAt: json["createdAt"],
       );
 
@@ -55,20 +58,61 @@ class Doc {
         "_id": id,
         "sectorName": sectorName,
         "phaseID": phaseIdValues.reverse[phaseId],
+        "phase": List<dynamic>.from(phase!.map((x) => x.toJson())),
         "createdAt": createdAt,
       };
 }
 
+class Phase {
+  Phase({
+    this.phaseName,
+  });
+
+  PhaseName? phaseName;
+
+  factory Phase.fromJson(Map<String, dynamic> json) => Phase(
+        phaseName: phaseNameValues.map[json["phaseName"]],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "phaseName": phaseNameValues.reverse[phaseName],
+      };
+}
+
+enum PhaseName {
+  PHASE_I,
+  PHASE_II,
+  PHASE_III,
+  PHASE_IV,
+  PHASE_V,
+  PHASE_VI,
+  PHASE_VII,
+  PHASE_VIII,
+  PHASE_IX
+}
+
+final phaseNameValues = EnumValues({
+  "Phase I": PhaseName.PHASE_I,
+  "Phase II": PhaseName.PHASE_II,
+  "Phase III": PhaseName.PHASE_III,
+  "Phase IV": PhaseName.PHASE_IV,
+  "Phase IX": PhaseName.PHASE_IX,
+  "Phase V": PhaseName.PHASE_V,
+  "Phase VI": PhaseName.PHASE_VI,
+  "Phase VII": PhaseName.PHASE_VII,
+  "Phase VIII": PhaseName.PHASE_VIII
+});
+
 enum PhaseId {
-  THE_63400892168_E30_DF6_EC1_DE64,
-  THE_63400875168_E30_DF6_EC1_DE60,
-  THE_63400870168_E30_DF6_EC1_DE5_C,
-  THE_6340086_B168_E30_DF6_EC1_DE58,
-  THE_63400845168_E30_DF6_EC1_DE53,
-  THE_63400838168_E30_DF6_EC1_DE4_E,
-  THE_6340082_A168_E30_DF6_EC1_DE49,
+  THE_634007_A8168_E30_DF6_EC1_DE3_F,
   THE_634007_D8168_E30_DF6_EC1_DE44,
-  THE_634007_A8168_E30_DF6_EC1_DE3_F
+  THE_6340082_A168_E30_DF6_EC1_DE49,
+  THE_63400838168_E30_DF6_EC1_DE4_E,
+  THE_63400845168_E30_DF6_EC1_DE53,
+  THE_6340086_B168_E30_DF6_EC1_DE58,
+  THE_63400870168_E30_DF6_EC1_DE5_C,
+  THE_63400875168_E30_DF6_EC1_DE60,
+  THE_63400892168_E30_DF6_EC1_DE64
 }
 
 final phaseIdValues = EnumValues({

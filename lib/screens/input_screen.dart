@@ -1,3 +1,4 @@
+import 'dart:convert' as convert;
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -5,11 +6,15 @@ import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import '../model/maintenance_record.dart';
 import '../model/dummy_data.dart';
 import '../model/phase_model.dart';
+import '../model/phase_record.dart';
+import '../utils/api_constants.dart';
 import '../utils/api_service.dart';
+import '../utils/shared_service.dart';
 
 class InputScreen extends StatefulWidget {
   // static const namedRoute = '/inputScreen';
@@ -22,6 +27,12 @@ class InputScreen extends StatefulWidget {
 }
 
 class _InputScreenState extends State<InputScreen> {
+  var _phases = [];
+  var _sectors = [];
+
+  String? phase;
+  String? sector;
+
   final formKey = GlobalKey<FormState>();
   late List<PhaseRecord>? phaseModel = [];
   String btnText = 'Save';
@@ -43,18 +54,41 @@ class _InputScreenState extends State<InputScreen> {
   Uint8List? bytes1, bytes2, bytes3, bytes4;
   String? _img1, _img2, _img3, _img4;
 
-  _getData() async {
-    phaseModel = (await ApiService().getPhases());
-    for (var i = 0; i < phaseModel!.length; i++) {
-      map1 = phaseModel![i].docs!.asMap();
-    }
-    print('Phase Map Length: ${map1.length}');
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
-  }
-  // void _getData() async {
+  // Box<PhasesRecords>? box1;
+
+  // _getData() async {
   //   phaseModel = (await ApiService().getPhases());
+  //   // for (var i = 0; i < phaseModel.length; i++) {
+  //   //   map1 = phaseModel![i].docs!.asMap();
+  //   // }
+  //   print('Phase Map Length: ${phaseModel!.length}');
   //   Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   // }
+
+  Future getPhaseData() async {
+    var loginDetails = await SharedService.loginDetails();
+    var allPhases = [];
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'x-access-token': loginDetails!.token
+    };
+    var response = await http.get(
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.sectorEndpoint),
+        headers: requestHeaders);
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      // print('This is the list of jsonResponse: $jsonResponse');
+      setState(() {
+        allPhases = jsonResponse;
+      });
+      print('This is the list of phases: $_phases');
+    }
+  }
+
+  void _getData() async {
+    phaseModel = (await ApiService().getPhases());
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
 
   Future<void> captureImage1() async {
     var picker = ImagePicker();
@@ -239,18 +273,8 @@ class _InputScreenState extends State<InputScreen> {
     }
   }
 
-  // void populatePhase(Map<String, String> phaseMap) {
-  //   for (String key in phaseMap.keys) {
-  //     phaseMenuItem.add(
-  //       DropdownMenuItem(
-  //         value: phaseMap[key],
-  //         child: Text(phaseMap[key] as String),
-  //       ),
-  //     );
-  //   }
-  // }
-  void populatePhase(Map phaseMap) {
-    for (int key in phaseMap.keys) {
+  void populatePhase(Map<String, String> phaseMap) {
+    for (String key in phaseMap.keys) {
       phaseMenuItem.add(
         DropdownMenuItem(
           value: phaseMap[key],
@@ -272,34 +296,34 @@ class _InputScreenState extends State<InputScreen> {
   }
 
   void phaseValChange(value) {
-    if (value == 'Phase 1') {
+    if (value == '1') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase II') {
+      populatePhase(phase1);
+    } else if (value == '2') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase III') {
+      populatePhase(phase2);
+    } else if (value == '3') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase IV') {
+      populatePhase(phase3);
+    } else if (value == '4') {
       phaseMenuItem = [];
-      populatePhase(map1);
+      populatePhase(phase4);
       // populatePhase4();
-    } else if (value == 'Phase V') {
+    } else if (value == '5') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase VI') {
+      populatePhase(phase5);
+    } else if (value == '6') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase VII') {
+      populatePhase(phase6);
+    } else if (value == '7') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase VIII') {
+      populatePhase(phase7);
+    } else if (value == '8') {
       phaseMenuItem = [];
-      populatePhase(map1);
-    } else if (value == 'Phase IX') {
+      populatePhase(phase8);
+    } else if (value == '9') {
       phaseMenuItem = [];
-      populatePhase(map1);
+      populatePhase(phase9);
     }
     setState(() {
       sectorValue = null;
@@ -352,7 +376,9 @@ class _InputScreenState extends State<InputScreen> {
     // TODO: implement initState
     super.initState();
     determinePosition();
-    _getData();
+    getPhaseData();
+    // _getData();
+    // submitPhasesRecord();
   }
 
   @override
@@ -368,10 +394,10 @@ class _InputScreenState extends State<InputScreen> {
         centerTitle: true,
         title: Text(widget.appRecord == null ? 'Add Record' : 'View Record'),
         actions: [
-          IconButton(onPressed: _getData, icon: Icon(Icons.safety_check)),
+          IconButton(onPressed: null, icon: Icon(Icons.safety_check)),
         ],
       ),
-      body: map1.isEmpty
+      body: _phases.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: SizedBox(
@@ -444,18 +470,18 @@ class _InputScreenState extends State<InputScreen> {
                                 ? null
                                 : Text(widget.appRecord!.phase!),
                             value: phaseValue,
-                            // items: phases.map((String value) {
-                            //   return DropdownMenuItem(
-                            //     value: value,
-                            //     child: Text(value),
-                            //   );
-                            // }).toList(),
-                            items: map1.entries.map((e) {
+                            items: phases.map((String value) {
                               return DropdownMenuItem(
-                                value: e.value.phaseName,
-                                child: Text(e.value.phaseName),
+                                value: value,
+                                child: Text(value),
                               );
                             }).toList(),
+                            // items: _phases.map((e) {
+                            //   return DropdownMenuItem(
+                            //     child: Text(e["Docs"]),
+                            //     value: e["Docs"],
+                            //   );
+                            // }).toList(),
                             onChanged: widget.appRecord != null
                                 ? null
                                 : (value) => phaseValChange(value),
