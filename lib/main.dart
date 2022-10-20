@@ -1,6 +1,5 @@
 import 'package:dha_cleaning_app/model/phase_model.dart';
 import 'package:dha_cleaning_app/model/phase_record.dart';
-import 'package:dha_cleaning_app/utils/country_demo.dart';
 import 'package:dha_cleaning_app/utils/shared_service.dart';
 import 'package:dha_cleaning_app/widgets/demo_phase.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import './screens/homepage.dart';
 import './model/maintenance_record.dart';
 import './model/user_record.dart';
 import './model/phase_record.dart';
-import './utils/country_demo.dart';
 
 Widget _defaultHome = const SplashScreen();
 
